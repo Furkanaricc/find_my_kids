@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:camera/camera.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class CameraSayfasi extends StatefulWidget {
@@ -77,6 +78,25 @@ class _CameraSayfasiState extends State<CameraSayfasi> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
+            Card(
+              child: Container(
+                height: 70,
+                width: 350,
+                child: const Row(
+                  mainAxisAlignment:MainAxisAlignment.spaceEvenly,
+                  children: [
+                    Icon(CupertinoIcons.exclamationmark_bubble),
+                    Column(mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text("Aşşağıdaki butonları kullanarak video veya"),
+                        Text(" fotoğraf çekebilirsiniz."),
+                      ],
+                    ),
+
+                  ],
+                ),
+              ),
+            ),
               /*ListView(
               children: [
                 Column(
@@ -90,9 +110,15 @@ class _CameraSayfasiState extends State<CameraSayfasi> {
               width: ekranGenisligi,
               height: 90,
               color: Colors.orangeAccent,
-              child: IconButton(onPressed: (){
-                _takePicture();
-              }, icon: const Icon(Icons.camera,size: 55,)),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  IconButton(onPressed: (){}, icon:const Icon(Icons.videocam_outlined,size: 55,) ),
+                  IconButton(onPressed: (){
+                    _takePicture();
+                  }, icon: const Icon(Icons.camera,size: 55,)),
+                ],
+              ),
 
             ),
           ],
