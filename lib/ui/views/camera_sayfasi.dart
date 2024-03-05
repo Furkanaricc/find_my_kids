@@ -15,6 +15,7 @@ class _CameraSayfasiState extends State<CameraSayfasi> {
   late CameraController _controller;
   late Future<void> _initializeControllerFuture;
   late List<CameraDescription> cameras;
+  bool _isRecording = false;
 
   @override
   void initState() {
@@ -29,6 +30,7 @@ class _CameraSayfasiState extends State<CameraSayfasi> {
     _controller = CameraController(
       cameras.isNotEmpty ? cameras[1] : throw 'No cameras found',
       ResolutionPreset.max,
+      enableAudio: true,
     );
     _initializeControllerFuture = _controller.initialize();
   }
@@ -64,6 +66,28 @@ class _CameraSayfasiState extends State<CameraSayfasi> {
       print(e);
     }
   }
+  void startRecording() async {
+    try {
+      await _controller.startVideoRecording();
+      setState(() {
+        _isRecording = true;
+      });
+    } on CameraException catch (e) {
+      print('Error starting video recording: $e');
+    }
+  }
+
+  void stopRecording() async {
+    try {
+      XFile videoFile = await _controller.stopVideoRecording();
+      print('Video recorded at ${videoFile.path}');
+      setState(() {
+        _isRecording = false;
+      });
+    } on CameraException catch (e) {
+      print('Error stopping video recording: $e');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -81,7 +105,7 @@ class _CameraSayfasiState extends State<CameraSayfasi> {
             Card(
               child: Container(
                 height: 70,
-                width: 350,
+                width: 345,
                 child: const Row(
                   mainAxisAlignment:MainAxisAlignment.spaceEvenly,
                   children: [
@@ -109,11 +133,12 @@ class _CameraSayfasiState extends State<CameraSayfasi> {
             Container(
               width: ekranGenisligi,
               height: 90,
-              color: Colors.orangeAccent,
+              color: Colors.amber ,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
-                  IconButton(onPressed: (){}, icon:const Icon(Icons.videocam_outlined,size: 55,) ),
+                  IconButton(onPressed: (){_isRecording ? stopRecording : startRecording;},
+                      icon: Icon( _isRecording ? Icons.stop : Icons.videocam_outlined,size: 55,) ),
                   IconButton(onPressed: (){
                     _takePicture();
                   }, icon: const Icon(Icons.camera,size: 55,)),
