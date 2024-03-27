@@ -1,7 +1,10 @@
 import 'dart:io';
 import 'package:camera/camera.dart';
+import 'package:find_my_kids/ui/cubit/kamera_sayfa_cubit.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:video_player/video_player.dart';
 
 class CameraSayfasi extends StatefulWidget {
   const CameraSayfasi({Key? key}) : super(key: key);
@@ -11,7 +14,6 @@ class CameraSayfasi extends StatefulWidget {
 }
 
 class _CameraSayfasiState extends State<CameraSayfasi> {
-
   late CameraController _controller;
   late Future<void> _initializeControllerFuture;
   late List<CameraDescription> cameras;
@@ -22,7 +24,6 @@ class _CameraSayfasiState extends State<CameraSayfasi> {
     super.initState();
     getAvailableCameras();
     initializeCameraController();
-
   }
 
   void initializeCameraController() async {
@@ -51,6 +52,8 @@ class _CameraSayfasiState extends State<CameraSayfasi> {
     try {
       await _initializeControllerFuture;
       final image = await _controller.takePicture();
+      String photoPath = image.path; // Fotoğrafın dosya yolu
+      context.read<KameraSayfaCubit>().savePhoto(photoPath); // savePhoto metodunu çağırarak dosya yolunu kaydedin
       // Elde edilen fotoğrafı kullanın veya kaydedin
 
       Navigator.push(
@@ -58,7 +61,9 @@ class _CameraSayfasiState extends State<CameraSayfasi> {
         MaterialPageRoute(
           builder: (context) => Scaffold(
             appBar: AppBar(),
-            body: Image.file(File(image.path)), // Fotoğrafı göstermek için Image.file() kullanıyoruz.
+            body: Image.file(File(
+              photoPath
+            )), // Fotoğrafı göstermek için Image.file() kullanıyoruz.
           ),
         ),
       );
@@ -66,7 +71,8 @@ class _CameraSayfasiState extends State<CameraSayfasi> {
       print(e);
     }
   }
-  void startRecording() async {
+
+  void startRecording(BuildContext context) async {
     try {
       await _controller.startVideoRecording();
       setState(() {
@@ -77,13 +83,35 @@ class _CameraSayfasiState extends State<CameraSayfasi> {
     }
   }
 
-  void stopRecording() async {
+  void stopRecording(BuildContext context) async {
     try {
       XFile videoFile = await _controller.stopVideoRecording();
+      String videoPath = videoFile.path; // Video dosyasının dosya yolu
+      context.read<KameraSayfaCubit>().saveVideo(videoPath); // saveVideo metodunu çağırarak dosya yolunu kaydedin
       print('Video recorded at ${videoFile.path}');
       setState(() {
         _isRecording = false;
+
       });
+      if (videoFile != null) {
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => Scaffold(
+                body: Center(
+                  child: AspectRatio(
+                    aspectRatio: _controller.value.aspectRatio,
+                    child: VideoPlayerController.file(File(videoFile.path))
+                            .value
+                            .isInitialized
+                        ? VideoPlayer(
+                            VideoPlayerController.file(File(videoFile.path)))
+                        : CircularProgressIndicator(),
+                  ),
+                ),
+              ),
+            ));
+      }
     } on CameraException catch (e) {
       print('Error stopping video recording: $e');
     }
@@ -91,7 +119,6 @@ class _CameraSayfasiState extends State<CameraSayfasi> {
 
   @override
   Widget build(BuildContext context) {
-
     var ekranBilgisi = MediaQuery.of(context);
     final double ekranYuksekligi = ekranBilgisi.size.height;
     final double ekranGenisligi = ekranBilgisi.size.width;
@@ -107,21 +134,21 @@ class _CameraSayfasiState extends State<CameraSayfasi> {
                 height: 70,
                 width: 345,
                 child: const Row(
-                  mainAxisAlignment:MainAxisAlignment.spaceEvenly,
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     Icon(CupertinoIcons.exclamationmark_bubble),
-                    Column(mainAxisAlignment: MainAxisAlignment.center,
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text("Aşşağıdaki butonları kullanarak video veya"),
                         Text(" fotoğraf çekebilirsiniz."),
                       ],
                     ),
-
                   ],
                 ),
               ),
             ),
-              /*ListView(
+            /*ListView(
               children: [
                 Column(
                   children: [
@@ -133,18 +160,29 @@ class _CameraSayfasiState extends State<CameraSayfasi> {
             Container(
               width: ekranGenisligi,
               height: 90,
-              color: Colors.amber ,
+              color: Colors.amber,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
-                  IconButton(onPressed: (){_isRecording ? stopRecording : startRecording;},
-                      icon: Icon( _isRecording ? Icons.stop : Icons.videocam_outlined,size: 55,) ),
-                  IconButton(onPressed: (){
-                    _takePicture();
-                  }, icon: const Icon(Icons.camera,size: 55,)),
+                  IconButton(
+                      onPressed: () {
+                        _isRecording ? stopRecording(context) : startRecording(context);
+                      },
+                      icon: Icon(
+                        _isRecording ? Icons.stop : Icons.videocam_outlined,
+                        size: 55,
+                      )),
+                  IconButton(
+                      onPressed: () {
+                        _takePicture();
+
+                      },
+                      icon: const Icon(
+                        Icons.camera,
+                        size: 55,
+                      )),
                 ],
               ),
-
             ),
           ],
         ),

@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'package:battery_plus/battery_plus.dart';
+import 'package:find_my_kids/ui/cubit/batarya_sayfa_cubit.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class BataryaSayfasi extends StatefulWidget {
   const BataryaSayfasi({Key? key}) : super(key: key);
@@ -19,20 +21,23 @@ class _BataryaSayfasiState extends State<BataryaSayfasi> {
 
   @override
   void initState() {
-
-      super.initState();
+    super.initState();
+    getBataryaYuzde();
+    getBataryaDurum();
+    timer = Timer.periodic(Duration(seconds: 5), (timer) {
       getBataryaYuzde();
-      getBataryaDurum();
-      timer = Timer.periodic(Duration(seconds: 5), (timer) {
-        getBataryaYuzde();
-      });
+    });
   }
+
 
   void getBataryaYuzde () async {
     final level = await batarya.batteryLevel;
-    yuzde = level;
     setState(() {
-
+      yuzde = level; // Yeni batarya yüzdesini güncelliyoruz
+      // Güncel batarya yüzdesini konsola yazdırıyoruz
+      print('Batarya yüzdesi güncellendi: $yuzde');
+      // Güncel batarya yüzdesini Cocuklar sınıfındaki cocuk_batarya özelliğine atıyoruz
+      context.read<BataryaSayfaCubit>().updateBatarya(yuzde.toString());
     });
   }
 
@@ -57,35 +62,35 @@ class _BataryaSayfasiState extends State<BataryaSayfasi> {
     switch(state) {
       case BatteryState.full :
         return Container(
-        child: Icon(Icons.battery_full,size: 200, color: Colors.lightGreen,),
-      );
+          child: Icon(Icons.battery_full,size: 200, color: Colors.lightGreen,),
+        );
       case BatteryState.charging:
         return Container(
           child: Icon(Icons.battery_charging_full,size: 200, color: Colors.lightGreen,),
         );
       case BatteryState.discharging:
       default:
-      return Container(
-        child: Icon(Icons.battery_alert,size: 200, color: Colors.red,),
-      );
+        return Container(
+          child: Icon(Icons.battery_alert,size: 200, color: Colors.red,),
+        );
 
     }
   }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            Buildbattery(bataryaDurum),
-            Text("Pil Güç Seviyesi : % ${yuzde}",
-              style: TextStyle(color: Colors.orangeAccent ,
-                  fontSize: 24,fontWeight: FontWeight.bold),)
-          ],
-        ),
-      )
+        appBar: AppBar(),
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              Buildbattery(bataryaDurum),
+              Text("Pil Güç Seviyesi : % ${yuzde}",
+                style: const TextStyle(color: Colors.orangeAccent ,
+                    fontSize: 24,fontWeight: FontWeight.bold),)
+            ],
+          ),
+        )
     );
   }
 }

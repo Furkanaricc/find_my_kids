@@ -1,8 +1,7 @@
+import 'package:find_my_kids/ui/cubit/ortam_sesi_sayfa_cubit.dart';
 import 'package:find_my_kids/utils/sound_controller.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
 import '../../utils/audio_list.dart';
 
 
@@ -60,9 +59,12 @@ class _OrtamSesiState extends State<OrtamSesi> {
                                 ],
                         )
                         );
-                        /*String selectedFilePath = audioManager.audioRecordings[index];
-                        print('Seçilen dosya yolu: $selectedFilePath');
-                        soundController.playAudio(selectedFilePath);*/
+                        String audioFilePath = audioManager.audioRecordings[index];
+                        print('Seçilen dosya yolu: $audioFilePath');
+                        soundController.playAudio(audioFilePath);
+                        // Cocuklar nesnesine ses dosyası yolu ataması yap
+                        context.read<OrtamSesiSayfaCubit>().updateCocukSes(audioFilePath);
+                        print("update cocuk ses Çalıştı");
                       },
                     );
                   },

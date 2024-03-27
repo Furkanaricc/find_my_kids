@@ -1,6 +1,10 @@
+import 'dart:async';
 import 'package:find_my_kids/utils/location_service.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import '../cubit/konum_sayfa_cubit.dart';
 
 //const LatLng currentLocation = LatLng(39.925533, 32.866287);
 
@@ -16,13 +20,24 @@ class _KonumSayfasiState extends State<KonumSayfasi> {
   String? lat, long, country, adminArea;
   late LatLng? currentLocation;
   BitmapDescriptor manIcon = BitmapDescriptor.defaultMarker;
-
+  late Timer timer;
 
   @override
   void initState() {
     super.initState();
+    currentLocation = LatLng(39.92, 32.86);
     //setCustomMakerIcon();
     getLocation();
+    // Timer başlat ve her 3 saniyede bir getLocation yöntemini çağır
+    timer = Timer.periodic(Duration(seconds: 3), (timer) {
+      getLocation();
+    });
+  }
+  @override
+  void dispose() {
+    // Timer'i iptal et
+    timer.cancel();
+    super.dispose();
   }
 
   /* ICON EKLEME
@@ -53,7 +68,7 @@ class _KonumSayfasiState extends State<KonumSayfasi> {
         actions: [
           IconButton(
               onPressed: () {
-                updateLocation();
+                context.read()<KonumSayfaCubit>().updateLocation();
               },
               icon: Icon(Icons.refresh))
         ],
@@ -75,6 +90,14 @@ class _KonumSayfasiState extends State<KonumSayfasi> {
             ),
           ),
         },
+        onCameraMove: (CameraPosition position) {
+        // Harita kamerası hareket ettikçe çağrılacak
+        // Yeni konumu alın ve Cocuklar nesnesine atayın
+        LatLng newPosition = position.target;
+        context.read<KonumSayfaCubit>().updateCocukKonum(newPosition);
+        // Konum güncellendiğinde konsola bir çıktı yazdır
+        print('Konum güncellendi: $newPosition');
+      },
         onMapCreated: (controller) {
           mapController = controller;
         },
@@ -108,11 +131,13 @@ class _KonumSayfasiState extends State<KonumSayfasi> {
         );
         print("${lat}");
         print("${long}");
+        // Çocuk konumu güncellendiğinde harita görüntüsünü güncelle
+        mapController.animateCamera(CameraUpdate.newLatLng(currentLocation!));
       });
     }
   }
 
-  void updateLocation() {
-    getLocation();
-  }
+
 }
+
+

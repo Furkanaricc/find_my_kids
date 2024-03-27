@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:find_my_kids/ui/views/camera_sayfasi.dart';
 import 'package:find_my_kids/ui/views/batarya_sayfasi.dart';
 import 'package:find_my_kids/ui/views/ortam_sesi.dart';
