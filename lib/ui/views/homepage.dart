@@ -1,9 +1,11 @@
 import 'dart:async';
+import 'package:find_my_kids/ui/cubit/anasayfa_cubit.dart';
 import 'package:find_my_kids/ui/views/camera_sayfasi.dart';
 import 'package:find_my_kids/ui/views/batarya_sayfasi.dart';
 import 'package:find_my_kids/ui/views/ortam_sesi.dart';
 import 'package:find_my_kids/utils/ses_ayar.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:perfect_volume_control/perfect_volume_control.dart';
 
 class HomePage extends StatefulWidget {
@@ -188,10 +190,14 @@ class _HomePageState extends State<HomePage> {
                                 onChanged: (newValue) {
                                   setState(() {
                                     sesAcikMi = newValue;
+                                    String yeniSesAyar = newValue ? "açık" : "kapalı";
+                                    context.read<AnasayfaCubit>().updateSesAyar(yeniSesAyar);
                                     if (PerfectVolumeControl.volume == false ){
                                         sesAcikMi = false;
+                                        context.read<AnasayfaCubit>().updateSesAyar(yeniSesAyar);
                                     }else{
                                       sesAcikMi = true;
+                                      context.read<AnasayfaCubit>().updateSesAyar(yeniSesAyar);
                                     }
 
                                   });

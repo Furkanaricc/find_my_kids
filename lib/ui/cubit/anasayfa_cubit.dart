@@ -8,5 +8,8 @@ class AnasayfaCubit extends Cubit<void>{
   AnasayfaCubit():super(0);
   var frepo =FindDaoRepository();
 
+  void updateSesAyar(String yeniSesAyar) {
+  frepo.updateSesAyar(yeniSesAyar);
+  }
 
 }

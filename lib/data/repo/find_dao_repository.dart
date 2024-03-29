@@ -33,6 +33,10 @@ class FindDaoRepository{
     repository.cocuk.cocuk_video = videoPath;
   }
 
+  void updateSesAyar(String yeniSesAyar) {
+    cocuk.ses_ayar = yeniSesAyar;
+  }
+
 
 }
 

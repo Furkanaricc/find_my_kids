@@ -15,6 +15,7 @@ class OrtamSesi extends StatefulWidget {
 class _OrtamSesiState extends State<OrtamSesi> {
 
 
+
   AudioRecordingsManager audioManager = AudioRecordingsManager();
 
   @override
@@ -32,7 +33,7 @@ class _OrtamSesiState extends State<OrtamSesi> {
     final double ekranYuksekligi = ekranBilgisi.size.height;
     final double ekranGenisligi = ekranBilgisi.size.width;
 
-    final SoundController soundController = context.watch();
+    final SoundController soundController = context.watch<SoundController>();
 
 
     return Scaffold(

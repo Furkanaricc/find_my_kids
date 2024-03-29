@@ -6,6 +6,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_sound/flutter_sound.dart';
 
 class SoundController extends ChangeNotifier{
+  SoundController();
   static final SoundController _instance = SoundController._internal();
   static SoundController get instance => _instance;
   SoundController._internal();
