@@ -10,35 +10,36 @@ class CameraSayfasi extends StatefulWidget {
   const CameraSayfasi({Key? key}) : super(key: key);
 
   @override
-  State<CameraSayfasi> createState() => _CameraSayfasiState();
+  _CameraSayfasiState createState() => _CameraSayfasiState();
 }
 
 class _CameraSayfasiState extends State<CameraSayfasi> {
   late CameraController _controller;
-  late Future<void> _initializeControllerFuture;
-  late List<CameraDescription> cameras;
-  bool _isRecording = false;
+  late List<CameraDescription> _cameras;
+  int _selectedCameraIdx = 0; // Ön kamera varsayılan olarak seçilmiş durumda
 
   @override
   void initState() {
     super.initState();
-    getAvailableCameras();
-    initializeCameraController();
+    _initializeCamera();
   }
 
-  void initializeCameraController() async {
-    await getAvailableCameras();
+  Future<void> _initializeCamera() async {
+    // Mevcut kameraları alma
+    _cameras = await availableCameras();
+
+    // Seçilen kamerayı başlatma
     _controller = CameraController(
-      cameras.isNotEmpty ? cameras[1] : throw 'No cameras found',
-      ResolutionPreset.max,
-      enableAudio: true,
+      _cameras[_selectedCameraIdx],
+      ResolutionPreset.medium,
     );
-    _initializeControllerFuture = _controller.initialize();
-  }
 
-  Future<void> getAvailableCameras() async {
-    WidgetsFlutterBinding.ensureInitialized();
-    cameras = await availableCameras();
+    // Kamerayı başlatma
+    await _controller.initialize();
+
+    if (mounted) {
+      setState(() {});
+    }
   }
 
   @override
@@ -47,146 +48,46 @@ class _CameraSayfasiState extends State<CameraSayfasi> {
     super.dispose();
   }
 
-  // Fotoğraf çekmek için bir fonksiyon tanımlayın
-  void _takePicture() async {
-    try {
-      await _initializeControllerFuture;
-      final image = await _controller.takePicture();
-      String photoPath = image.path; // Fotoğrafın dosya yolu
-      context.read<KameraSayfaCubit>().savePhoto(photoPath); // savePhoto metodunu çağırarak dosya yolunu kaydedin
-      // Elde edilen fotoğrafı kullanın veya kaydedin
+  void _toggleCamera() async {
+    if (_controller.value.isInitialized) {
+      // Mevcut kamerayı kapatma
+      await _controller.dispose();
 
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => Scaffold(
-            appBar: AppBar(),
-            body: Image.file(File(
-              photoPath
-            )), // Fotoğrafı göstermek için Image.file() kullanıyoruz.
-          ),
-        ),
+      // Seçilen kameranın indeksini değiştirme (ön kamera ise arka kameraya, arka kamera ise ön kameraya geçiş yapma)
+      _selectedCameraIdx = (_selectedCameraIdx + 1) % _cameras.length;
+
+      // Yeni kamerayı başlatma
+      _controller = CameraController(
+        _cameras[_selectedCameraIdx],
+        ResolutionPreset.medium,
       );
-    } catch (e) {
-      print(e);
-    }
-  }
 
-  void startRecording(BuildContext context) async {
-    try {
-      await _controller.startVideoRecording();
-      setState(() {
-        _isRecording = true;
-      });
-    } on CameraException catch (e) {
-      print('Error starting video recording: $e');
-    }
-  }
+      // Kamerayı başlatma
+      await _controller.initialize();
 
-  void stopRecording(BuildContext context) async {
-    try {
-      XFile videoFile = await _controller.stopVideoRecording();
-      String videoPath = videoFile.path; // Video dosyasının dosya yolu
-      context.read<KameraSayfaCubit>().saveVideo(videoPath); // saveVideo metodunu çağırarak dosya yolunu kaydedin
-      print('Video recorded at ${videoFile.path}');
-      setState(() {
-        _isRecording = false;
-
-      });
-      if (videoFile != null) {
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => Scaffold(
-                body: Center(
-                  child: AspectRatio(
-                    aspectRatio: _controller.value.aspectRatio,
-                    child: VideoPlayerController.file(File(videoFile.path))
-                            .value
-                            .isInitialized
-                        ? VideoPlayer(
-                            VideoPlayerController.file(File(videoFile.path)))
-                        : CircularProgressIndicator(),
-                  ),
-                ),
-              ),
-            ));
+      if (mounted) {
+        setState(() {});
       }
-    } on CameraException catch (e) {
-      print('Error stopping video recording: $e');
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    var ekranBilgisi = MediaQuery.of(context);
-    final double ekranYuksekligi = ekranBilgisi.size.height;
-    final double ekranGenisligi = ekranBilgisi.size.width;
+    if (_controller == null || !_controller.value.isInitialized) {
+      return Container();
+    }
 
     return Scaffold(
-      appBar: AppBar(),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [
-            Card(
-              child: Container(
-                height: 70,
-                width: 345,
-                child: const Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    Icon(CupertinoIcons.exclamationmark_bubble),
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text("Aşşağıdaki butonları kullanarak video veya"),
-                        Text(" fotoğraf çekebilirsiniz."),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            /*ListView(
-              children: [
-                Column(
-                  children: [
-
-                  ],
-                )
-              ],
-            ),*/
-            Container(
-              width: ekranGenisligi,
-              height: 90,
-              color: Colors.amber,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  IconButton(
-                      onPressed: () {
-                        _isRecording ? stopRecording(context) : startRecording(context);
-                      },
-                      icon: Icon(
-                        _isRecording ? Icons.stop : Icons.videocam_outlined,
-                        size: 55,
-                      )),
-                  IconButton(
-                      onPressed: () {
-                        _takePicture();
-
-                      },
-                      icon: const Icon(
-                        Icons.camera,
-                        size: 55,
-                      )),
-                ],
-              ),
-            ),
-          ],
-        ),
+      appBar: AppBar(
+        title: const Text('Camera Ekran'),
+        actions: [
+          IconButton(
+            onPressed: _toggleCamera,
+            icon: const Icon(Icons.switch_camera),
+          ),
+        ],
       ),
+      body: CameraPreview(_controller),
     );
   }
 }

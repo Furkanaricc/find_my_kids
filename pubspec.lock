@@ -201,6 +201,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.6"
+  dart_webrtc:
+    dependency: transitive
+    description:
+      name: dart_webrtc
+      sha256: b3a4f109c551a10170ece8fc79b5ca1b98223f24bcebc0f971d7fe35daad7a3b
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.4.4"
   dbus:
     dependency: transitive
     description:
@@ -360,6 +368,14 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  flutter_webrtc:
+    dependency: "direct main"
+    description:
+      name: flutter_webrtc
+      sha256: "63295f3aaba6e0e2520064a928fd0b79bf3636695af9c89cb219241994a45bf6"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.10.4"
   fluttertoast:
     dependency: "direct main"
     description:
@@ -640,6 +656,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.4.0"
+  logging:
+    dependency: transitive
+    description:
+      name: logging
+      sha256: "623a88c9594aa774443aa3eb2d41807a48486b5613e67599fb4c41c0ad47c340"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.2.0"
   matcher:
     dependency: transitive
     description:
@@ -808,6 +832,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.1.4"
+  platform_detect:
+    dependency: transitive
+    description:
+      name: platform_detect
+      sha256: "08f4ee79c0e1c4858d37e06b22352a3ebdef5466b613749a3adb03e703d4f5b0"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.0.11"
   plugin_platform_interface:
     dependency: transitive
     description:
@@ -824,6 +856,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "6.1.1"
+  pub_semver:
+    dependency: transitive
+    description:
+      name: pub_semver
+      sha256: "40d3ab1bbd474c4c2328c91e3a7df8c6dd629b79ece4c4bd04bee496a224fb0c"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.1.4"
   quiver:
     dependency: transitive
     description:
@@ -917,6 +957,22 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.99"
+  socket_io_client:
+    dependency: "direct main"
+    description:
+      name: socket_io_client
+      sha256: ede469f3e4c55e8528b4e023bdedbc20832e8811ab9b61679d1ba3ed5f01f23b
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.0.3+1"
+  socket_io_common:
+    dependency: transitive
+    description:
+      name: socket_io_common
+      sha256: "2ab92f8ff3ebbd4b353bf4a98bee45cc157e3255464b2f90f66e09c4472047eb"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.0.3"
   source_span:
     dependency: transitive
     description:
@@ -1133,6 +1189,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.5.1"
+  webrtc_interface:
+    dependency: transitive
+    description:
+      name: webrtc_interface
+      sha256: abec3ab7956bd5ac539cf34a42fa0c82ea26675847c0966bb85160400eea9388
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.2.0"
   win32:
     dependency: transitive
     description:

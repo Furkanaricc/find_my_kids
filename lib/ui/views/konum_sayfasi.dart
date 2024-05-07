@@ -70,7 +70,7 @@ class _KonumSayfasiState extends State<KonumSayfasi> {
               onPressed: () {
                 context.read()<KonumSayfaCubit>().updateLocation();
               },
-              icon: Icon(Icons.refresh))
+              icon: const Icon(Icons.refresh))
         ],
       ),
       body: currentLocation != null

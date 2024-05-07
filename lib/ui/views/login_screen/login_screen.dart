@@ -23,8 +23,8 @@ class _LoginScreenState extends State<LoginScreen> {
             begin: Alignment(-0.2, -0.8),
             end: Alignment.bottomCenter,
             colors: [
-              Color(0x007CBFCF),
-              Color(0xB316BFC4),
+              Color(0xFFD2FFF4),
+              Color(0xFFFB8C00),
             ],
           ),
         ),
@@ -43,7 +43,7 @@ class _LoginScreenState extends State<LoginScreen> {
           end: Alignment(0.7, 0.8),
           colors: [
             Color(0xFFFFCC80),
-            Color(0x005CDBCF),
+            Color(0xFFFB8C00),
           ],
         ),
       ),

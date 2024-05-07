@@ -61,7 +61,7 @@ class _LoginContentState extends State<LoginContent>
 
   Widget actionButton(String title, {Function()? onTap}) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 135, vertical: 16),
+      padding: const EdgeInsets.symmetric(horizontal: 35, vertical: 16),
       child: ElevatedButton(
         onPressed: () {
           if (onTap != null) {
@@ -88,7 +88,7 @@ class _LoginContentState extends State<LoginContent>
 
   Widget orDivider() {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 130, vertical: 8),
+      padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 8),
       child: Row(
         children: [
           Flexible(
@@ -97,7 +97,7 @@ class _LoginContentState extends State<LoginContent>
               color: kPrimaryColor,
             ),
           ),
-          const Padding(
+          /*const Padding(
             padding: EdgeInsets.symmetric(horizontal: 16),
             child: Text(
               'ya da',
@@ -106,7 +106,7 @@ class _LoginContentState extends State<LoginContent>
                 fontWeight: FontWeight.w600,
               ),
             ),
-          ),
+          ),*/
           Flexible(
             child: Container(
               height: 1,
@@ -118,7 +118,7 @@ class _LoginContentState extends State<LoginContent>
     );
   }
 
-  Widget logos() {
+  /*Widget logos() {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 16),
       child: Row(
@@ -134,7 +134,7 @@ class _LoginContentState extends State<LoginContent>
         ],
       ),
     );
-  }
+  }*/
 
   Widget forgotPassword() {
     return Padding(
@@ -164,7 +164,7 @@ class _LoginContentState extends State<LoginContent>
               email: _tEmail.text,
               password: _tPassword.text),),
       orDivider(),
-      logos(),
+      // logos(),
     ];
 
     loginContent = [
@@ -206,6 +206,46 @@ class _LoginContentState extends State<LoginContent>
     super.dispose();
   }
 
+  /*@override
+  Widget build(BuildContext context) {
+    return Stack(
+      children: [
+        const Positioned(
+          top: 136,
+          left: 24,
+          child: TopText(),
+        ),
+        SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 100),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: createAccountContent,
+                ),
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: loginContent,
+                ),
+                const Align(
+                  alignment: Alignment.bottomCenter,
+                  child: Padding(
+                    padding: EdgeInsets.only(bottom: 50),
+                    child: BottomText(),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
+  }*/
   @override
   Widget build(BuildContext context) {
     return Stack(
